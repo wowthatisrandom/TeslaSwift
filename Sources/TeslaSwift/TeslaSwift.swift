@@ -179,10 +179,9 @@ extension TeslaSwift {
      - parameter completion:      The completion handler when the token as been retrived
      - returns: A ViewController that your app needs to present. This ViewContoller will ask the user for his/her Tesla credentials, MFA code if set and then desmiss on successful authentication
      */
-    #if canImport(WebKit) && canImport(UIKit)
-    @available(iOS 13.0, *)
+    
+    @available(OSX 10.15, *)
     public func authenticateWeb(completion: @escaping (Result<AuthToken, Error>) -> ()) -> TeslaWebLoginViewContoller? {
-
         let codeRequest = AuthCodeRequest()
         let endpoint = Endpoint.oAuth2Authorization(auth: codeRequest)
         var urlComponents = URLComponents(string: endpoint.baseURL())
@@ -216,7 +215,6 @@ extension TeslaSwift {
 
         return teslaWebLoginViewContoller
     }
-    #endif
 
     private func getAuthenticationTokenforWeb(code: String, completion: @escaping (Result<AuthToken, Error>) -> ()) {
 
