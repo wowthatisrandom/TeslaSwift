@@ -6,10 +6,10 @@
 //  Copyright © 2020 Joao Nunes. All rights reserved.
 //
 
-#if canImport(WebKit) && canImport(UIKit)
+#if canImport(WebKit)
 import WebKit
 
-public class TeslaWebLoginViewContoller: UIViewController {
+public class TeslaWebLoginViewContoller: NSViewController {
     var webView = WKWebView()
     var result: ((Result<URL, Error>) -> ())?
 
@@ -35,7 +35,9 @@ extension TeslaWebLoginViewContoller: WKNavigationDelegate {
         if let url = navigationAction.request.url, url.absoluteString.starts(with: "https://auth.tesla.com/void/callback")  {
             //AppDelegate.sharedInstance.applicationHandle(url: url)
             decisionHandler(.cancel)
-            self.dismiss(animated: true, completion: nil)
+            let window:NSWindow = self.view.window!
+            window.close()
+            
             self.result?(Result.success(url))
         } else {
             decisionHandler(.allow)
@@ -44,7 +46,9 @@ extension TeslaWebLoginViewContoller: WKNavigationDelegate {
 
     public func webView(_ webView: WKWebView, didFail navigation: WKNavigation!, withError error: Error) {
         self.result?(Result.failure(TeslaError.authenticationFailed))
-        self.dismiss(animated: true, completion: nil)
+        
+        let window:NSWindow = self.view.window!
+        window.close()
     }
 
 }
