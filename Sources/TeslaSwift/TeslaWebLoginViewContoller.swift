@@ -96,7 +96,7 @@ public class TeslaWebLoginViewContoller: NSViewController {
         password .isBordered = false
         password .usesSingleLineMode = true
 
-        cpLogin .frame = NSMakeRect(90, -5, 200, 32)
+        cpLogin .frame = NSMakeRect(115, -5, 200, 32)
         cpLogin .title = "Insert Username and Password"
         cpLogin .isBordered = true
         cpLogin .setButtonType(.momentaryPushIn)
