@@ -226,6 +226,11 @@ extension TeslaSwift {
                 switch result {
                     case .success(let token):
                         self?.token = token
+                        let encoder = JSONEncoder()
+                        if let encoded = try? encoder.encode(token) {
+                            let defaults = UserDefaults.standard
+                            defaults.set(encoded, forKey: "SavedToken")
+                        }
                         completion(Result.success(token))
                     case .failure(let error):
                         if case let TeslaError.networkError(error: internalError) = error {
@@ -904,8 +909,13 @@ extension TeslaSwift {
 	}
 	
     func checkAuthentication(completion: @escaping (Result<AuthToken, Error>) -> ()) {
+        if useMockServer {
+            completion(Result.success(AuthToken.init(accessToken: "")))
+            return
+        }
+        
         guard let token = self.token else { completion(Result.failure(TeslaError.authenticationRequired)); return }
-
+        
         if checkToken() {
             completion(Result.success(token))
         } else {
@@ -919,7 +929,7 @@ extension TeslaSwift {
                 completion(Result.failure(TeslaError.authenticationRequired))
             }
         }
-	}
+    }
 	
     func request<ReturnType: Decodable, BodyType: Encodable>(_ endpoint: Endpoint, body: BodyType, completion: @escaping (Result<ReturnType, Error>) -> ()) -> Void {
 		
